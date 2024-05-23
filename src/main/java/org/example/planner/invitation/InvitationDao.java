@@ -41,7 +41,7 @@ public class InvitationDao implements DAO<Invitation, ICompositeKey> {
                 .addValue("meeting_id", compositeKey.meetingId())
                 .addValue("user_id", compositeKey.userId());
 
-        return jdbcTemplate.queryForStream(sql, params, rowMapper).findFirst();
+        return jdbcTemplate.query(sql, params, rowMapper).stream().findFirst();
     }
 
     @Override

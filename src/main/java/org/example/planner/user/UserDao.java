@@ -38,7 +38,7 @@ public class UserDao implements DAO<User, Integer> {
                 FROM users
                 WHERE id = :id
                 """;
-        return jdbcTemplate.queryForStream(sql, Map.of("id", id), rowMapper).findFirst();
+        return jdbcTemplate.query(sql, Map.of("id", id), rowMapper).stream().findFirst();
     }
 
     @Override

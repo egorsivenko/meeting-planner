@@ -41,7 +41,7 @@ public class MembershipDao implements DAO<Membership, MCompositeKey> {
                 .addValue("team_id", compositeKey.teamId())
                 .addValue("user_id", compositeKey.userId());
 
-        return jdbcTemplate.queryForStream(sql, params, rowMapper).findFirst();
+        return jdbcTemplate.query(sql, params, rowMapper).stream().findFirst();
     }
 
     @Override
