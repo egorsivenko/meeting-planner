@@ -41,6 +41,15 @@ public class UserDao implements DAO<User, Integer> {
         return jdbcTemplate.query(sql, Map.of("id", id), rowMapper).stream().findFirst();
     }
 
+    public Optional<User> getByEmail(String email) {
+        String sql = """
+                SELECT id, email, password, first_name, last_name, registration_date
+                FROM users
+                WHERE email = :email
+                """;
+        return jdbcTemplate.query(sql, Map.of("email", email), rowMapper).stream().findFirst();
+    }
+
     @Override
     public Integer create(User user) {
         String sql = """
