@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meeting Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link th:href="@{/assets/favicon.ico}" rel="icon" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="wrap">
+                    <div class="login-wrap p-4 p-md-5">
+                        <div class="d-flex">
+                            <div class="w-100">
+                                <h3 class="mb-4">Change full name</h3>
+                            </div>
+                        </div>
+                        <form th:action="@{/user/changeFullName}" th:object="${changeFullNameForm}" method="POST" autocomplete="off">
+                            <div class="form-group mt-4">
+                                <input th:field="*{firstName}" type="text" maxlength="25" class="form-control"
+                                       pattern="^\S{2,}$" placeholder="First name" required autofocus="autofocus"
+                                       title="First name must contain at least 2 non-whitespace characters"/>
+                                <label class="form-control-placeholder">First name</label>
+                            </div>
+                            <div class="form-group mt-5">
+                                <input th:field="*{lastName}" type="text" maxlength="25" class="form-control"
+                                       pattern="^\S{2,}$" placeholder="Last name" required
+                                       title="Last name must contain at least 2 non-whitespace characters"/>
+                                <label class="form-control-placeholder">Last name</label>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="form-control btn btn-primary rounded submit px-3">Submit</button>
+                            </div>
+                            <div class="form-group">
+                                <a th:href="@{/main}" class="form-control btn btn-danger rounded px-3">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

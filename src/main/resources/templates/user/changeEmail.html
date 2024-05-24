@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meeting Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link th:href="@{/assets/favicon.ico}" rel="icon" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="wrap">
+                    <div class="login-wrap p-4 p-md-5">
+                        <div class="d-flex">
+                            <div class="w-100">
+                                <h3 class="mb-4">Change email<br>(Re-login required)</h3>
+                            </div>
+                        </div>
+                        <form th:action="@{/user/changeEmail}" th:object="${changeEmailForm}" method="POST" autocomplete="off">
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-5" role="alert">
+                                <span th:text="${error}"></span>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="form-group mt-4">
+                                <input th:field="*{newEmail}" type="text" maxlength="50" class="form-control"
+                                       pattern="^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$" placeholder="Email"
+                                       title="Invalid email address format" id="email" autofocus="autofocus" required/>
+                                <label class="form-control-placeholder">Email</label>
+                            </div>
+                            <div class="form-group mt-5">
+                                <input type="text" maxlength="50" class="form-control"
+                                       pattern="^[^\s@]+@([^\s@.,]+\.)+[^\s@.,]{2,}$" placeholder="Confirm"
+                                       title="Invalid email address format" id="confirm-email" required/>
+                                <label class="form-control-placeholder">Confirm</label>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="form-control btn btn-primary rounded submit px-3"
+                                        id="submitButton" disabled>Submit
+                                </button>
+                            </div>
+                            <div class="form-group">
+                                <a th:href="@{/main}" class="form-control btn btn-danger rounded px-3">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const email = document.getElementById('email');
+    const confirmEmail = document.getElementById('confirm-email');
+    const submitButton = document.getElementById('submitButton');
+
+    function validateEmails() {
+        if (email.value && confirmEmail.value && email.value === confirmEmail.value) {
+            submitButton.disabled = false;
+            submitButton.classList.add('active');
+        } else {
+            submitButton.disabled = true;
+            submitButton.classList.remove('active');
+        }
+    }
+    email.addEventListener('input', validateEmails);
+    confirmEmail.addEventListener('input', validateEmails);
+</script>
+</body>
+</html>
