@@ -127,12 +127,6 @@ h1, h2, h3, h4, h5, .h1, .h2, .h3, .h4, .h5 {
 .form-control-placeholder {
     position: absolute;
     top: 2px;
-    padding: 7px 0 0 15px;
-    transition: all 400ms;
-    opacity: 0.6;
-}
-
-.form-control:focus + .form-control-placeholder, .form-control:empty + .form-control-placeholder {
     transform: translate3d(0, -120%, 0);
     padding: 7px 0 0 0;
     opacity: 1;
