@@ -63,7 +63,7 @@ public class MeetingDao implements DAO<Meeting, Integer> {
                 INSERT INTO meetings (organizer_id, team_id, subject, start_time, end_time,
                                       link, status, creation_time)
                 VALUES (:organizer_id, :team_id, :subject, :start_time, :end_time,
-                        :link, :status, :creation_time)
+                        :link, :status::meeting_status, :creation_time)
                 RETURNING id
                 """;
         SqlParameterSource params = new MapSqlParameterSource()
@@ -84,7 +84,7 @@ public class MeetingDao implements DAO<Meeting, Integer> {
         String sql = """
                 UPDATE meetings
                 SET subject = :subject, start_time = :start_time, end_time = :end_time,
-                    link = :link, status = :status, update_time = :update_time
+                    link = :link, status = :status::meeting_status, update_time = :update_time
                 WHERE id = :id
                 """;
         SqlParameterSource params = new MapSqlParameterSource()

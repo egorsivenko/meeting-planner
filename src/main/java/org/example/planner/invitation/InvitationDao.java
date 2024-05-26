@@ -48,7 +48,7 @@ public class InvitationDao implements DAO<Invitation, ICompositeKey> {
     public ICompositeKey create(Invitation invitation) {
         String sql = """
                 INSERT INTO invitations (meeting_id, user_id, status)
-                VALUES (:meeting_id, :user_id, :status)
+                VALUES (:meeting_id, :user_id, :status::invitation_status)
                 """;
         ICompositeKey compositeKey = invitation.getCompositeKey();
         SqlParameterSource params = new MapSqlParameterSource()
@@ -64,7 +64,7 @@ public class InvitationDao implements DAO<Invitation, ICompositeKey> {
     public void update(Invitation invitation) {
         String sql = """
                 UPDATE invitations
-                SET status = :status, suggested_time = :suggested_time, update_time = :update_time
+                SET status = :status::invitation_status, suggested_time = :suggested_time, update_time = :update_time
                 WHERE (meeting_id, user_id) = (:meeting_id, :user_id)
                 """;
         ICompositeKey compositeKey = invitation.getCompositeKey();

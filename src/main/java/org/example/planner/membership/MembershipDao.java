@@ -48,7 +48,7 @@ public class MembershipDao implements DAO<Membership, MCompositeKey> {
     public MCompositeKey create(Membership membership) {
         String sql = """
                 INSERT INTO memberships (team_id, user_id, role, team_joining_date, role_assignment_date)
-                VALUES (:team_id, :user_id, :role, :team_joining_date, :role_assignment_date)
+                VALUES (:team_id, :user_id, :role::user_role, :team_joining_date, :role_assignment_date)
                 """;
         MCompositeKey compositeKey = membership.getCompositeKey();
         SqlParameterSource params = new MapSqlParameterSource()
@@ -66,7 +66,7 @@ public class MembershipDao implements DAO<Membership, MCompositeKey> {
     public void update(Membership membership) {
         String sql = """
                 UPDATE memberships
-                SET role = :role, role_assignment_date = :role_assignment_date
+                SET role = :role::user_role, role_assignment_date = :role_assignment_date
                 WHERE (team_id, user_id) = (:team_id, :user_id)
                 """;
         MCompositeKey compositeKey = membership.getCompositeKey();
