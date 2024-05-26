@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.example.planner.team.Team;
+import org.example.planner.user.User;
 
 import java.time.LocalDate;
 
@@ -15,7 +17,8 @@ import java.time.LocalDate;
 @Builder
 public class Membership {
 
-    private MCompositeKey compositeKey;
+    private Team team;
+    private User user;
     private Role role;
     private LocalDate teamJoiningDate;
     private LocalDate roleAssignmentDate;
