@@ -41,6 +41,15 @@ public class TeamDao implements DAO<Team, Integer> {
         return jdbcTemplate.query(sql, Map.of("id", id), rowMapper).stream().findFirst();
     }
 
+    public Optional<Team> getByName(String name) {
+        String sql = """
+                SELECT id, name, description, creation_date
+                FROM teams
+                WHERE name = :name
+                """;
+        return jdbcTemplate.query(sql, Map.of("name", name), rowMapper).stream().findFirst();
+    }
+
     @Override
     public Integer create(Team team) {
         String sql = """

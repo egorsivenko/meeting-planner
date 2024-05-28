@@ -37,6 +37,38 @@ public class MembershipDao implements DAO<Membership, MCompositeKey> {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public List<Membership> getUserMemberships(Integer userId) {
+        String sql = """
+                SELECT team_id, t.name, t.description, t.creation_date,
+                       user_id, u.email, u.password, u.first_name, u.last_name, u.registration_date,
+                       m.role, m.team_joining_date, m.role_assignment_date
+                FROM memberships m
+                JOIN teams t
+                    ON m.team_id = t.id
+                JOIN users u
+                    ON m.user_id = u.id
+                WHERE user_id = :user_id
+                ORDER BY team_joining_date
+                """;
+        return jdbcTemplate.query(sql, Map.of("user_id", userId), rowMapper);
+    }
+
+    public List<Membership> getTeamMemberships(Integer teamId) {
+        String sql = """
+                SELECT team_id, t.name, t.description, t.creation_date,
+                       user_id, u.email, u.password, u.first_name, u.last_name, u.registration_date,
+                       m.role, m.team_joining_date, m.role_assignment_date
+                FROM memberships m
+                JOIN teams t
+                    ON m.team_id = t.id
+                JOIN users u
+                    ON m.user_id = u.id
+                WHERE team_id = :team_id
+                ORDER BY role, team_joining_date
+                """;
+        return jdbcTemplate.query(sql, Map.of("team_id", teamId), rowMapper);
+    }
+
     @Override
     public Optional<Membership> getById(MCompositeKey compositeKey) {
         String sql = """
