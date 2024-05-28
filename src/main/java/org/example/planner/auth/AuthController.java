@@ -42,7 +42,7 @@ public class AuthController {
             result.addObject("loginError", LOGIN_ERROR);
             return result;
         }
-        return new ModelAndView("redirect:/main");
+        return new ModelAndView("redirect:/teams");
     }
 
     @GetMapping("/register")
@@ -61,7 +61,7 @@ public class AuthController {
             result.addObject("registerError", ex.getMessage());
             return result;
         }
-        return new ModelAndView("redirect:/main");
+        return new ModelAndView("redirect:/teams");
     }
 
     @PostMapping("/logout")

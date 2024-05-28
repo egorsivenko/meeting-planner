@@ -40,7 +40,7 @@ public class UserController {
     @PostMapping("/changeFullName")
     public ModelAndView changeFullName(@ModelAttribute ChangeFullNameForm changeFullNameForm) {
         userService.changeUserFullName(changeFullNameForm);
-        return new ModelAndView("redirect:/main");
+        return new ModelAndView("redirect:/teams");
     }
 
     @GetMapping("/changeEmail")
