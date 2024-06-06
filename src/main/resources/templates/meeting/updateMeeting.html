@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meeting Planner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link th:href="@{/assets/favicon.ico}" rel="icon" type="image/x-icon"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<section class="ftco-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-5">
+                <div class="wrap">
+                    <div class="login-wrap p-4 p-md-5">
+                        <div class="d-flex">
+                            <div class="w-100">
+                                <h3 class="mb-4">Update the meeting</h3>
+                            </div>
+                        </div>
+                        <form th:action="@{/meetings/update}" th:object="${updateMeetingForm}" method="POST" autocomplete="off">
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-5" role="alert">
+                                <span th:text="${error}"></span>
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <input th:field="*{id}" type="hidden"/>
+                            <input th:field="*{teamId}" type="hidden"/>
+                            <div class="form-group mt-4">
+                                <input th:field="*{subject}" type="text" maxlength="100" class="form-control"
+                                       pattern="^.*\S.*$" placeholder="Subject" required autofocus="autofocus"
+                                       title="Subject cannot contain only whitespaces"/>
+                                <label class="form-control-placeholder">Meeting subject</label>
+                            </div>
+                            <div class="form-group mt-5">
+                                <input th:field="*{startTime}" id="startTime" type="datetime-local" class="form-control"
+                                       placeholder="Start time" required>
+                                <label class="form-control-placeholder">Start time</label>
+                            </div>
+                            <div class="form-group mt-5">
+                                <input th:field="*{endTime}" id="endTime" type="datetime-local" class="form-control"
+                                       placeholder="End time" required>
+                                <label class="form-control-placeholder">End time</label>
+                            </div>
+                            <div class="form-group mt-5">
+                                <input th:field="*{link}" type="text" maxlength="100" class="form-control"
+                                       pattern="^.*\S.*$" placeholder="Link" required
+                                       title="Link cannot contain only whitespaces"/>
+                                <label class="form-control-placeholder">Meeting link</label>
+                            </div>
+                            <div class="form-group mt-5">
+                                <select th:field="*{status}" class="form-control" required>
+                                    <option th:each="status : ${statuses}" th:value="${status}" th:text="${status.toString()}"></option>
+                                </select>
+                                <label class="form-control-placeholder">Meeting status</label>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="submitBtn" class="form-control btn btn-primary rounded submit px-3">Submit</button>
+                            </div>
+                            <div class="form-group">
+                                <a th:href="@{/meetings(teamId=*{teamId})}" class="form-control btn btn-danger rounded px-3">Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const startTimeInput = document.getElementById('startTime');
+        const endTimeInput = document.getElementById('endTime');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function validateTimes() {
+            const startTime = new Date(startTimeInput.value);
+            const endTime = new Date(endTimeInput.value);
+
+            submitBtn.disabled = startTime >= endTime;
+        }
+
+        startTimeInput.addEventListener('input', validateTimes);
+        endTimeInput.addEventListener('input', validateTimes);
+    });
+</script>
+</body>
+</html>

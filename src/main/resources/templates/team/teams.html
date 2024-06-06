@@ -43,11 +43,14 @@
             <td>
                 <div class="btn-group">
                     <a th:href="@{/teams/{id}/members(id=${userTeam.teamId})}">
-                        <button type="button" class="btn btn-primary">View team members</button>
+                        <button type="button" class="btn btn-outline-primary">Members</button>
+                    </a>
+                    <a th:href="@{/meetings(teamId=${userTeam.teamId})}">
+                        <button type="button" class="btn btn-outline-primary">Meetings</button>
                     </a>
                     <form th:action="@{/teams/leave/{id}(id=${userTeam.teamId})}" method="POST"
                           th:unless="${userTeam.userRole.toString().equals('OWNER')}">
-                        <button type="submit" class="btn btn-danger">Leave team</button>
+                        <button type="submit" class="btn btn-outline-danger">Leave team</button>
                     </form>
                 </div>
             </td>

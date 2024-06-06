@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +38,42 @@ public class MeetingDao implements DAO<Meeting, Integer> {
                 ORDER BY meeting_id
                 """;
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public List<Meeting> getActiveTeamMeetings(Integer teamId, LocalDateTime currTime) {
+        String sql = """
+                SELECT m.id AS meeting_id, m.subject, m.start_time, m.end_time,
+                            m.link, m.status, m.creation_time, m.update_time,
+                       u.id AS user_id, u.email, u.password, u.first_name, u.last_name,
+                            u.registration_date,
+                       t.id AS team_id, t.name, t.description, t.creation_date
+                FROM meetings m
+                JOIN users u
+                    ON m.organizer_id = u.id
+                JOIN teams t
+                    ON m.team_id = t.id
+                WHERE m.team_id = :team_id AND m.end_time >= :curr_time
+                ORDER BY start_time, update_time DESC NULLS LAST
+                """;
+        return jdbcTemplate.query(sql, Map.of("team_id", teamId, "curr_time", currTime), rowMapper);
+    }
+
+    public List<Meeting> getPastTeamMeetings(Integer teamId, LocalDateTime currTime) {
+        String sql = """
+                SELECT m.id AS meeting_id, m.subject, m.start_time, m.end_time,
+                            m.link, m.status, m.creation_time, m.update_time,
+                       u.id AS user_id, u.email, u.password, u.first_name, u.last_name,
+                            u.registration_date,
+                       t.id AS team_id, t.name, t.description, t.creation_date
+                FROM meetings m
+                JOIN users u
+                    ON m.organizer_id = u.id
+                JOIN teams t
+                    ON m.team_id = t.id
+                WHERE m.team_id = :team_id AND m.end_time < :curr_time
+                ORDER BY end_time DESC
+                """;
+        return jdbcTemplate.query(sql, Map.of("team_id", teamId, "curr_time", currTime), rowMapper);
     }
 
     @Override
