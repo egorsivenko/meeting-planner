@@ -5,6 +5,7 @@ import org.example.planner.meeting.exception.InvalidMeetingTimeException;
 import org.example.planner.meeting.form.CreateMeetingForm;
 import org.example.planner.meeting.form.UpdateMeetingForm;
 import org.example.planner.membership.MembershipService;
+import org.example.planner.team.response.TeamUser;
 import org.example.planner.team.response.UserTeam;
 import org.example.planner.user.User;
 import org.example.planner.user.UserService;
@@ -53,9 +54,13 @@ public class MeetingController {
     public ModelAndView createTeamMeeting(@RequestParam Integer teamId) {
         CreateMeetingForm createMeetingForm = new CreateMeetingForm();
         createMeetingForm.setTeamId(teamId);
+        List<TeamUser> teamUsers = membershipService.getTeamUsers(teamId);
+        User currentUser = userService.getCurrentUser();
 
         ModelAndView result = new ModelAndView("meeting/createMeeting");
         result.addObject("createMeetingForm", createMeetingForm);
+        result.addObject("teamUsers", teamUsers);
+        result.addObject("currentUser", currentUser);
         return result;
     }
 

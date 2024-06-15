@@ -34,7 +34,7 @@
             <th>Organized by</th>
             <th>Start time</th>
             <th>End time</th>
-            <th th:if="${active}">Actions</th>
+            <th>Actions</th>
             <th>Status</th>
             <th th:if="${active}">Organizer Authorities</th>
         </tr>
@@ -54,10 +54,15 @@
             <td th:text="${meeting.organizer.firstName + ' ' + meeting.organizer.lastName}"></td>
             <td th:text="${#temporals.format(meeting.startTime, 'dd MMM YYYY, HH:mm')}"></td>
             <td th:text="${#temporals.format(meeting.endTime, 'dd MMM YYYY, HH:mm')}"></td>
-            <td th:if="${active}">
-                <a th:href="${meeting.link}" target="_blank">
-                    <button type="button" class="btn btn-outline-primary">Join meeting</button>
-                </a>
+            <td>
+                <div class="btn-group">
+                    <a th:href="${meeting.link}" th:if="${active}" target="_blank">
+                        <button type="button" class="btn btn-outline-primary">Join</button>
+                    </a>
+                    <a th:href="@{/invitations(meetingId=${meeting.id})}">
+                        <button type="button" class="btn btn-outline-primary">Invitations</button>
+                    </a>
+                </div>
             </td>
             <td th:text="${meeting.status.toString()}"></td>
             <td th:if="${active}">

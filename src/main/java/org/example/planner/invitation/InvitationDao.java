@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -28,6 +29,16 @@ public class InvitationDao implements DAO<Invitation, ICompositeKey> {
                 ORDER BY meeting_id, user_id
                 """;
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public List<Invitation> getByMeetingId(Integer meetingId) {
+        String sql = """
+                SELECT meeting_id, user_id, status, suggested_time, update_time
+                FROM invitations
+                WHERE meeting_id = :meeting_id
+                ORDER BY status, update_time DESC NULLS LAST
+                """;
+        return jdbcTemplate.query(sql, Map.of("meeting_id", meetingId), rowMapper);
     }
 
     @Override

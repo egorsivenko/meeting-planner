@@ -1,5 +1,6 @@
 package org.example.planner.meeting;
 
+import org.example.planner.invitation.InvitationService;
 import org.example.planner.meeting.form.CreateMeetingForm;
 import org.example.planner.meeting.form.UpdateMeetingForm;
 import org.example.planner.meeting.validation.MeetingValidator;
@@ -16,11 +17,14 @@ public class MeetingService {
     private final MeetingDao meetingDao;
     private final UserService userService;
     private final MeetingValidator meetingValidator;
+    private final InvitationService invitationService;
 
-    public MeetingService(MeetingDao meetingDao, UserService userService, MeetingValidator meetingValidator) {
+    public MeetingService(MeetingDao meetingDao, UserService userService,
+                          MeetingValidator meetingValidator, InvitationService invitationService) {
         this.meetingDao = meetingDao;
         this.userService = userService;
         this.meetingValidator = meetingValidator;
+        this.invitationService = invitationService;
     }
 
     public List<Meeting> getTeamMeetings(Integer teamId, boolean active) {
@@ -45,7 +49,10 @@ public class MeetingService {
                 .build();
 
         meetingValidator.validateMeeting(meeting);
-        meetingDao.create(meeting);
+        Integer meetingId = meetingDao.create(meeting);
+
+        createMeetingForm.getParticipantsId()
+                .forEach(userId -> invitationService.create(meetingId, userId));
     }
 
     public void updateMeeting(UpdateMeetingForm updateMeetingForm) {
