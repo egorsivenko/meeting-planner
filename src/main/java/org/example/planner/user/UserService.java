@@ -19,6 +19,10 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    public User getById(Integer id) {
+        return userDao.getById(id).orElseThrow();
+    }
+
     public User getByEmail(String email) {
         return userDao.getByEmail(email).orElseThrow();
     }
