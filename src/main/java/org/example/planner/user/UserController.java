@@ -32,8 +32,11 @@ public class UserController {
 
     @GetMapping("/changeFullName")
     public ModelAndView changeFullNameForm() {
+        User user = userService.getCurrentUser();
+        ChangeFullNameForm form = new ChangeFullNameForm(user.getFirstName(), user.getLastName());
+
         ModelAndView result = new ModelAndView("user/changeFullName");
-        result.addObject("changeFullNameForm", new ChangeFullNameForm());
+        result.addObject("changeFullNameForm", form);
         return result;
     }
 
