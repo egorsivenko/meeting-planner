@@ -37,31 +37,35 @@ public class AuthService {
 
     public void loginUser(LoginForm loginForm, HttpServletResponse response) {
         String token = generateTokenFromCreds(loginForm.getEmail(), loginForm.getPassword());
-        response.addCookie(buildAuthCookie(token));
+        response.addCookie(buildAuthCookie(token, COOKIE_MAX_AGE));
     }
 
     public void registerUser(RegisterForm registerForm, HttpServletResponse response) {
         String email = registerForm.getEmail();
-        String password = registerForm.getPassword();
 
         if (userDao.getByEmail(email).isPresent()) {
             throw new EmailAlreadyTakenException(email);
         }
-        User user = User.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .firstName(registerForm.getFirstName())
-                .lastName(registerForm.getLastName())
-                .registrationDate(LocalDate.now())
-                .build();
-        userDao.create(user);
-
-        String token = generateTokenFromCreds(email, password);
-        response.addCookie(buildAuthCookie(token));
+        saveNewUser(registerForm);
+        loginUser(registerForm, response);
     }
 
     public void logoutUser(HttpServletResponse response) {
         response.addCookie(buildAuthCookie(null, 0));
+    }
+
+    private void saveNewUser(RegisterForm form) {
+        String encodedPassword = passwordEncoder.encode(form.getPassword());
+
+        userDao.create(
+                User.builder()
+                        .email(form.getEmail())
+                        .password(encodedPassword)
+                        .firstName(form.getFirstName())
+                        .lastName(form.getLastName())
+                        .registrationDate(LocalDate.now())
+                        .build()
+        );
     }
 
     private String generateTokenFromCreds(String email, String password) throws AuthenticationException {
@@ -69,10 +73,6 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(email, password));
 
         return jwtProvider.generateToken(authentication);
-    }
-
-    private Cookie buildAuthCookie(String token) {
-        return buildAuthCookie(token, COOKIE_MAX_AGE);
     }
 
     private Cookie buildAuthCookie(String token, int maxAge) {
