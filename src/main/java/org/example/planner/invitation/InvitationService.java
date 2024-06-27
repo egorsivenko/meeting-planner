@@ -1,9 +1,8 @@
 package org.example.planner.invitation;
 
-import org.example.planner.invitation.response.InvitationResponse;
 import org.example.planner.invitation.form.RespondInvitationForm;
-import org.example.planner.user.User;
-import org.example.planner.user.UserService;
+import org.example.planner.invitation.mapper.InvitationMapper;
+import org.example.planner.invitation.response.InvitationResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,11 +12,11 @@ import java.util.List;
 public class InvitationService {
 
     private final InvitationDao invitationDao;
-    private final UserService userService;
+    private final InvitationMapper invitationMapper;
 
-    public InvitationService(InvitationDao invitationDao, UserService userService) {
+    public InvitationService(InvitationDao invitationDao, InvitationMapper invitationMapper) {
         this.invitationDao = invitationDao;
-        this.userService = userService;
+        this.invitationMapper = invitationMapper;
     }
 
     public Invitation getInvitationById(Integer meetingId, Integer userId) {
@@ -27,20 +26,7 @@ public class InvitationService {
 
     public List<InvitationResponse> getMeetingInvitations(Integer meetingId) {
         return invitationDao.getByMeetingId(meetingId).stream()
-                .map(invitation -> {
-                    Integer userId = invitation.getCompositeKey().userId();
-                    User user = userService.getById(userId);
-
-                    return InvitationResponse.builder()
-                            .meetingId(meetingId)
-                            .participantId(user.getId())
-                            .participantFirstName(user.getFirstName())
-                            .participantLastName(user.getLastName())
-                            .status(invitation.getStatus())
-                            .suggestedTime(invitation.getSuggestedTime())
-                            .updateTime(invitation.getUpdateTime())
-                            .build();
-                })
+                .map(invitationMapper::toInvitationResponse)
                 .toList();
     }
 

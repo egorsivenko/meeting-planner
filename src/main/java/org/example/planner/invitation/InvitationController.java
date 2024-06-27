@@ -1,7 +1,8 @@
 package org.example.planner.invitation;
 
-import org.example.planner.invitation.response.InvitationResponse;
 import org.example.planner.invitation.form.RespondInvitationForm;
+import org.example.planner.invitation.mapper.InvitationMapper;
+import org.example.planner.invitation.response.InvitationResponse;
 import org.example.planner.meeting.Meeting;
 import org.example.planner.meeting.MeetingService;
 import org.example.planner.user.User;
@@ -25,11 +26,14 @@ public class InvitationController {
     private final InvitationService invitationService;
     private final MeetingService meetingService;
     private final UserService userService;
+    private final InvitationMapper invitationMapper;
 
-    public InvitationController(InvitationService invitationService, MeetingService meetingService, UserService userService) {
+    public InvitationController(InvitationService invitationService, MeetingService meetingService,
+                                UserService userService, InvitationMapper invitationMapper) {
         this.invitationService = invitationService;
         this.meetingService = meetingService;
         this.userService = userService;
+        this.invitationMapper = invitationMapper;
     }
 
     @GetMapping
@@ -48,13 +52,7 @@ public class InvitationController {
     @GetMapping("/{meetingId}/{userId}/respond")
     public ModelAndView respondToInvitation(@PathVariable Integer meetingId, @PathVariable Integer userId) {
         Invitation invitation = invitationService.getInvitationById(meetingId, userId);
-        RespondInvitationForm form = RespondInvitationForm.builder()
-                .meetingId(invitation.getCompositeKey().meetingId())
-                .userId(invitation.getCompositeKey().userId())
-                .status(invitation.getStatus())
-                .suggestedTime(invitation.getSuggestedTime())
-                .build();
-
+        RespondInvitationForm form = invitationMapper.toRespondInvitationForm(invitation);
         List<InvitationStatus> statuses = Arrays.stream(InvitationStatus.values())
                 .filter(status -> !status.equals(InvitationStatus.ACTIVE))
                 .toList();
