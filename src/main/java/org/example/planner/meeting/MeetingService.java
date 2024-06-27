@@ -3,9 +3,8 @@ package org.example.planner.meeting;
 import org.example.planner.invitation.InvitationService;
 import org.example.planner.meeting.form.CreateMeetingForm;
 import org.example.planner.meeting.form.UpdateMeetingForm;
+import org.example.planner.meeting.mapper.MeetingMapper;
 import org.example.planner.meeting.validation.MeetingValidator;
-import org.example.planner.team.Team;
-import org.example.planner.user.UserService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,15 +14,15 @@ import java.util.List;
 public class MeetingService {
 
     private final MeetingDao meetingDao;
-    private final UserService userService;
     private final MeetingValidator meetingValidator;
+    private final MeetingMapper meetingMapper;
     private final InvitationService invitationService;
 
-    public MeetingService(MeetingDao meetingDao, UserService userService,
-                          MeetingValidator meetingValidator, InvitationService invitationService) {
+    public MeetingService(MeetingDao meetingDao, MeetingValidator meetingValidator,
+                          MeetingMapper meetingMapper, InvitationService invitationService) {
         this.meetingDao = meetingDao;
-        this.userService = userService;
         this.meetingValidator = meetingValidator;
+        this.meetingMapper = meetingMapper;
         this.invitationService = invitationService;
     }
 
@@ -37,16 +36,7 @@ public class MeetingService {
     }
 
     public void createMeeting(CreateMeetingForm createMeetingForm) {
-        Meeting meeting = Meeting.builder()
-                .organizer(userService.getCurrentUser())
-                .team(Team.builder().id(createMeetingForm.getTeamId()).build())
-                .subject(createMeetingForm.getSubject().strip())
-                .startTime(createMeetingForm.getStartTime())
-                .endTime(createMeetingForm.getEndTime())
-                .link(createMeetingForm.getLink().strip())
-                .status(MeetingStatus.SCHEDULED)
-                .creationTime(LocalDateTime.now())
-                .build();
+        Meeting meeting = meetingMapper.toMeeting(createMeetingForm);
 
         meetingValidator.validateMeeting(meeting);
         Integer meetingId = meetingDao.create(meeting);

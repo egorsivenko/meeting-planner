@@ -4,6 +4,7 @@ import org.example.planner.meeting.exception.InvalidLinkException;
 import org.example.planner.meeting.exception.InvalidMeetingTimeException;
 import org.example.planner.meeting.form.CreateMeetingForm;
 import org.example.planner.meeting.form.UpdateMeetingForm;
+import org.example.planner.meeting.mapper.MeetingMapper;
 import org.example.planner.membership.MembershipService;
 import org.example.planner.team.response.TeamUser;
 import org.example.planner.team.response.UserTeam;
@@ -28,11 +29,14 @@ public class MeetingController {
     private final MeetingService meetingService;
     private final MembershipService membershipService;
     private final UserService userService;
+    private final MeetingMapper meetingMapper;
 
-    public MeetingController(MeetingService meetingService, MembershipService membershipService, UserService userService) {
+    public MeetingController(MeetingService meetingService, MembershipService membershipService,
+                             UserService userService, MeetingMapper meetingMapper) {
         this.meetingService = meetingService;
         this.membershipService = membershipService;
         this.userService = userService;
+        this.meetingMapper = meetingMapper;
     }
 
     @GetMapping
@@ -79,16 +83,7 @@ public class MeetingController {
     @GetMapping("/update")
     public ModelAndView updateMeeting(@RequestParam Integer id) {
         Meeting meeting = meetingService.getMeetingById(id);
-        UpdateMeetingForm updateMeetingForm = UpdateMeetingForm.builder()
-                .id(id)
-                .teamId(meeting.getTeam().getId())
-                .subject(meeting.getSubject())
-                .startTime(meeting.getStartTime())
-                .endTime(meeting.getEndTime())
-                .link(meeting.getLink())
-                .status(meeting.getStatus())
-                .build();
-
+        UpdateMeetingForm updateMeetingForm = meetingMapper.toUpdateMeetingForm(meeting);
         List<MeetingStatus> statuses = Arrays.asList(MeetingStatus.values());
 
         ModelAndView result = new ModelAndView("meeting/updateMeeting");
