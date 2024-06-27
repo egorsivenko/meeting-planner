@@ -6,9 +6,9 @@ import java.time.format.DateTimeFormatter;
 public class InvalidMeetingTimeException extends RuntimeException {
 
     private static final String MESSAGE = "Meeting start time cannot be earlier than %s";
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-    public InvalidMeetingTimeException() {
-        super(String.format(MESSAGE, formatter.format(LocalDateTime.now())));
+    public InvalidMeetingTimeException(LocalDateTime dateTime) {
+        super(String.format(MESSAGE, FORMATTER.format(dateTime)));
     }
 }

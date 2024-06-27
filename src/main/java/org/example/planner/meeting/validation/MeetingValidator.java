@@ -21,8 +21,9 @@ public class MeetingValidator {
     }
 
     private void validateMeetingTime(Meeting meeting) {
-        if (meeting.getStartTime().isBefore(LocalDateTime.now())) {
-            throw new InvalidMeetingTimeException();
+        LocalDateTime now = LocalDateTime.now();
+        if (meeting.getStartTime().isBefore(now)) {
+            throw new InvalidMeetingTimeException(now);
         }
     }
 }
