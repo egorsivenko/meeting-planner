@@ -64,7 +64,7 @@
                                 <button type="submit" id="submitBtn" class="form-control btn btn-primary rounded submit px-3">Submit</button>
                             </div>
                             <div class="form-group">
-                                <a th:href="@{/meetings(teamId=*{teamId})}" class="form-control btn btn-danger rounded px-3">Cancel</a>
+                                <a th:href="@{/meetings(teamId=*{teamId},active=true)}" class="form-control btn btn-danger rounded px-3">Cancel</a>
                             </div>
                         </form>
                     </div>

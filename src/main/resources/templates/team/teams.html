@@ -45,7 +45,7 @@
                     <a th:href="@{/teams/{id}/members(id=${userTeam.teamId})}">
                         <button type="button" class="btn btn-outline-primary">Members</button>
                     </a>
-                    <a th:href="@{/meetings(teamId=${userTeam.teamId})}">
+                    <a th:href="@{/meetings(teamId=${userTeam.teamId},active=true)}">
                         <button type="button" class="btn btn-outline-primary">Meetings</button>
                     </a>
                     <form th:action="@{/teams/leave/{id}(id=${userTeam.teamId})}" method="POST"
