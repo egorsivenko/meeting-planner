@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class InvitationController {
         result.addObject("invitations", invitations);
         result.addObject("meeting", meeting);
         result.addObject("currentUser", currentUser);
+        result.addObject("currTime", LocalDateTime.now());
         return result;
     }
 

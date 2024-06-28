@@ -43,10 +43,15 @@
 
             <td th:if="${invitation.updateTime != null}" th:text="${#temporals.format(invitation.updateTime, 'dd MMM YYYY, HH:mm')}"></td>
             <td th:if="${invitation.updateTime == null}" style="font-style: italic;">
-                <div th:if="${invitation.participantId == currentUser.id}">
-                    <a th:href="@{/invitations/{meetingId}/{userId}/respond(meetingId=${invitation.meetingId}, userId=${invitation.participantId})}">
-                        <button type="button" class="btn btn-dark">Respond</button>
-                    </a>
+                <div th:if="${invitation.participantId == currentUser.id}" th:with="now=${currTime}">
+                    <div th:if="${now.isBefore(meeting.startTime)}">
+                        <a th:href="@{/invitations/{meetingId}/{userId}/respond(meetingId=${invitation.meetingId}, userId=${invitation.participantId})}">
+                            <button type="button" class="btn btn-dark">Respond</button>
+                        </a>
+                    </div>
+                    <div th:unless="${now.isBefore(meeting.startTime)}">
+                        Meeting is already underway
+                    </div>
                 </div>
                 <div th:unless="${invitation.participantId == currentUser.id}">
                     User has not responded
