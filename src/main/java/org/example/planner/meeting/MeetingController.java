@@ -73,8 +73,13 @@ public class MeetingController {
         try {
             meetingService.createMeeting(createMeetingForm);
         } catch (InvalidLinkException | InvalidMeetingTimeException ex) {
+            List<TeamUser> teamUsers = membershipService.getTeamUsers(createMeetingForm.getTeamId());
+            User currentUser = userService.getCurrentUser();
+
             ModelAndView result = new ModelAndView("meeting/createMeeting");
             result.addObject("error", ex.getMessage());
+            result.addObject("teamUsers", teamUsers);
+            result.addObject("currentUser", currentUser);
             return result;
         }
         return new ModelAndView("redirect:/meetings?teamId=" + createMeetingForm.getTeamId());
