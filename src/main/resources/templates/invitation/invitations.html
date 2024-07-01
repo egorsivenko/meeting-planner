@@ -50,7 +50,7 @@
                         </a>
                     </div>
                     <div th:unless="${now.isBefore(meeting.startTime)}">
-                        Meeting is already underway
+                        Invitation has expired
                     </div>
                 </div>
                 <div th:unless="${invitation.participantId == currentUser.id}">
