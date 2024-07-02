@@ -1,6 +1,7 @@
 package org.example.planner.meeting;
 
 import org.example.planner.invitation.InvitationService;
+import org.example.planner.meeting.exception.ActiveMeetingsLimitExceededException;
 import org.example.planner.meeting.form.CreateMeetingForm;
 import org.example.planner.meeting.form.UpdateMeetingForm;
 import org.example.planner.meeting.mapper.MeetingMapper;
@@ -12,6 +13,8 @@ import java.util.List;
 
 @Service
 public class MeetingService {
+
+    private static final int ACTIVE_MEETINGS_LIMIT = 200;
 
     private final MeetingDao meetingDao;
     private final MeetingValidator meetingValidator;
@@ -36,6 +39,7 @@ public class MeetingService {
     }
 
     public void createMeeting(CreateMeetingForm createMeetingForm) {
+        verifyActiveMeetingsLimit(createMeetingForm.getTeamId());
         Meeting meeting = meetingMapper.toMeeting(createMeetingForm);
 
         meetingValidator.validateMeeting(meeting);
@@ -60,5 +64,13 @@ public class MeetingService {
 
     public void deleteMeeting(Integer meetingId) {
         meetingDao.delete(meetingId);
+    }
+
+    private void verifyActiveMeetingsLimit(int teamId) {
+        int activeMeetingsNumber = getTeamMeetings(teamId, true).size();
+
+        if (activeMeetingsNumber >= ACTIVE_MEETINGS_LIMIT) {
+            throw new ActiveMeetingsLimitExceededException();
+        }
     }
 }

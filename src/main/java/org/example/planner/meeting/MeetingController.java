@@ -2,6 +2,7 @@ package org.example.planner.meeting;
 
 import org.example.planner.meeting.exception.InvalidLinkException;
 import org.example.planner.meeting.exception.InvalidMeetingTimeException;
+import org.example.planner.meeting.exception.ActiveMeetingsLimitExceededException;
 import org.example.planner.meeting.form.CreateMeetingForm;
 import org.example.planner.meeting.form.UpdateMeetingForm;
 import org.example.planner.meeting.mapper.MeetingMapper;
@@ -72,7 +73,7 @@ public class MeetingController {
     public ModelAndView createTeamMeeting(@ModelAttribute CreateMeetingForm createMeetingForm) {
         try {
             meetingService.createMeeting(createMeetingForm);
-        } catch (InvalidLinkException | InvalidMeetingTimeException ex) {
+        } catch (InvalidLinkException | InvalidMeetingTimeException | ActiveMeetingsLimitExceededException ex) {
             List<TeamUser> teamUsers = membershipService.getTeamUsers(createMeetingForm.getTeamId());
             User currentUser = userService.getCurrentUser();
 
