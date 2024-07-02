@@ -2,7 +2,9 @@ package org.example.planner.team;
 
 import org.example.planner.membership.MembershipService;
 import org.example.planner.membership.Role;
+import org.example.planner.team.exception.UserTeamsLimitExceededException;
 import org.example.planner.team.exception.NoTeamFoundByNameException;
+import org.example.planner.team.exception.TeamIsFullException;
 import org.example.planner.team.exception.TeamNameAlreadyExistsException;
 import org.example.planner.team.form.CreateTeamForm;
 import org.example.planner.team.form.JoinTeamForm;
@@ -15,6 +17,9 @@ import java.util.Optional;
 
 @Service
 public class TeamService {
+
+    private static final int USER_TEAMS_LIMIT = 100;
+    private static final int TEAM_MEMBERS_LIMIT = 150;
 
     private final TeamDao teamDao;
     private final MembershipService membershipService;
@@ -34,6 +39,8 @@ public class TeamService {
         if (teamDao.getByName(name).isPresent()) {
             throw new TeamNameAlreadyExistsException(name);
         }
+        verifyUserTeamsLimit();
+
         Team team = Team.builder()
                 .name(name)
                 .description(createTeamForm.getDescription().strip())
@@ -53,9 +60,14 @@ public class TeamService {
         if (teamOptional.isEmpty()) {
             throw new NoTeamFoundByNameException(teamName);
         }
+        verifyUserTeamsLimit();
+
         Team team = teamOptional.orElseThrow();
+        int teamId = team.getId();
+
+        verifyTeamMembersLimit(teamId);
         try {
-            membershipService.getUserTeam(team.getId());
+            membershipService.getUserTeam(teamId);
             throw new IllegalArgumentException("You are already a member of this team");
         } catch (NoSuchElementException ex) {
             membershipService.addUserToTeam(team, Role.MEMBER);
@@ -77,5 +89,21 @@ public class TeamService {
 
     public void deleteTeam(Integer teamId) {
         teamDao.delete(teamId);
+    }
+
+    private void verifyUserTeamsLimit() {
+        int userTeamsNumber = membershipService.getUserTeams().size();
+
+        if (userTeamsNumber >= USER_TEAMS_LIMIT) {
+            throw new UserTeamsLimitExceededException();
+        }
+    }
+
+    private void verifyTeamMembersLimit(int teamId) {
+        int teamMembersNumber = membershipService.getTeamUsers(teamId).size();
+
+        if (teamMembersNumber >= TEAM_MEMBERS_LIMIT) {
+            throw new TeamIsFullException();
+        }
     }
 }

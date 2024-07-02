@@ -1,7 +1,9 @@
 package org.example.planner.team;
 
 import org.example.planner.membership.MembershipService;
+import org.example.planner.team.exception.UserTeamsLimitExceededException;
 import org.example.planner.team.exception.NoTeamFoundByNameException;
+import org.example.planner.team.exception.TeamIsFullException;
 import org.example.planner.team.exception.TeamNameAlreadyExistsException;
 import org.example.planner.team.form.CreateTeamForm;
 import org.example.planner.team.form.JoinTeamForm;
@@ -61,7 +63,7 @@ public class TeamController {
     public ModelAndView createTeam(@ModelAttribute CreateTeamForm createTeamForm) {
         try {
             teamService.createTeam(createTeamForm);
-        } catch (TeamNameAlreadyExistsException ex) {
+        } catch (TeamNameAlreadyExistsException | UserTeamsLimitExceededException ex) {
             ModelAndView result = new ModelAndView("team/createTeam");
             result.addObject("error", ex.getMessage());
             return result;
@@ -80,7 +82,8 @@ public class TeamController {
     public ModelAndView joinTeam(@ModelAttribute JoinTeamForm joinTeamForm) {
         try {
             teamService.joinTeam(joinTeamForm);
-        } catch (NoTeamFoundByNameException | IllegalArgumentException ex) {
+        } catch (NoTeamFoundByNameException | IllegalArgumentException |
+                 UserTeamsLimitExceededException | TeamIsFullException ex) {
             ModelAndView result = new ModelAndView("team/joinTeam");
             result.addObject("error", ex.getMessage());
             return result;
